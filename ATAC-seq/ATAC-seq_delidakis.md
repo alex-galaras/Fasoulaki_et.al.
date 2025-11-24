@@ -117,51 +117,6 @@ Create track links
         --outdir "$OUT_DIR"
     done
 
-**Find overlaps of peaks**
-
-    library("DiffBind")
-
-    # Output directory
-    out_dir <- "/media/samba/hatzis_lab/delidakis_atac/diffbind/venns"
-    dir.create(out_dir, showWarnings = FALSE)
-
-
-    #Import file
-    samples.ATAC <- dba(sampleSheet="/media/samba/hatzis_lab/delidakis_atac/diffbind/templates/template.csv")
-
-    #Remove blacklisted genomic areas
-    samples.ATAC <- dba.blacklist(samples.ATAC, 
-                                  blacklist=DBA_BLACKLIST_DM6,
-                                  greylist=FALSE)
-    # Extract sample metadata
-    meta <- dba.show(samples.ATAC)
-
-    # Get the unique combinations of Condition + Treatment
-    conds <- unique(paste(meta$Condition, meta$Factor, sep="_"))
-
-
-    # Loop through each condition-factor group
-    for (ct in conds) {
-      subset_idx <- which(paste(meta$Condition, meta$Factor, sep="_") == ct)
-      
-      # Skip if fewer than 2 samples
-      if (length(subset_idx) < 2) next
-      
-      # All pairwise replicate combinations
-      combs <- combn(subset_idx, 2, simplify=FALSE)
-      
-      for (pair in combs) {
-        name <- paste0(out_dir, "/", ct, "_", 
-                       meta$ID[pair[1]], "_vs_", meta$ID[pair[2]], "_venn.png")
-        
-        png(name, width=1000, height=800)
-        dba.plotVenn(samples.ATAC, pair)
-        dev.off()
-        
-        message("Saved: ", name)
-      }
-    }
-
 **Differential accessibility analysis**
 
     # Load required libraries
