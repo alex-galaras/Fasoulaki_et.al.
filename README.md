@@ -201,3 +201,176 @@ The script expects the target file:
 targets_delidakis.txt
 ```
 # **ATAC-seq analysis**
+
+This repository contains the complete workflow used to process, align, QC, and analyze ATAC-seq data for the Delidakis project, including trimming, alignment, duplicate removal, peak calling, differential accessibility analysis, peak annotation, and visualization.
+
+The workflow is implemented in an R Markdown file and includes both **bash** and **R** code, enabling full reproducibility.
+
+---
+
+# **Pipeline Overview**
+
+The ATAC-seq analysis is performed in the following major steps:
+
+1. **Read trimming** (Trim Galore! + FastQC)
+2. **Alignment** (Bowtie2 + Samtools)
+3. **Duplicate removal + mitochondrial filtering**
+4. **Track generation** (bigWig normalized tracks using CPM)
+5. **Peak calling** (MACS3)
+6. **Differential accessibility** (DiffBind + DESeq2)
+7. **Peak annotation** (TSS and gene-body intersections using bedtools)
+
+All paths and file structures correspond to the configuration used on the Hatzis Lab servers.
+
+---
+
+## **1. Input Requirements**
+
+### **Raw Data**
+
+* Paired or single-end gzipped FASTQ files:
+
+  ```
+  /media/samba/hatzis_lab/delidakis_atac/fastq_files/*.gz
+  ```
+
+### **Reference Files**
+
+* Bowtie2 index for **dm6**
+* dm6 genome FASTA
+* dm6 Ensembl GTF (BDGP6.54.115)
+* Blacklist regions: `DBA_BLACKLIST_DM6` (from DiffBind)
+
+### **Software**
+
+| Tool         | Version              | Used for                   |
+| ------------ | -------------------- | -------------------------- |
+| Trim Galore! | ≥ 0.6                | Adapter trimming           |
+| FastQC       | ≥ 0.11               | QC                         |
+| Bowtie2      | ≥ 2.4                | ATAC-seq alignment         |
+| Samtools     | ≥ 1.9                | BAM processing             |
+| Bedtools     | ≥ 2.25               | Peak annotation            |
+| MACS3        | ≥ 3.0                | Peak calling               |
+| DiffBind     | ≥ 3.0                | Differential accessibility |
+| R ≥ 4.0      | Statistical analysis |                            |
+
+---
+
+# **2. Workflow Summary**
+
+## **Step I — Trimming**
+
+Trim Galore! removes adapters and performs quality trimming:
+
+```bash
+for i in /media/samba/hatzis_lab/delidakis_atac/fastq_files/*.gz; do
+    /media/raid/resources/ngstools/trimgalore/trim_galore --max_n 5 --fastqc $i
+done
+```
+
+---
+
+## **Step II — Alignment**
+
+Reads are aligned to the **dm6** genome using Bowtie2 in very-sensitive local mode.
+Alignment report includes total reads, mapped reads, and high-quality reads.
+
+Outputs:
+
+* Sorted BAM files
+* Alignment summary table (`bowtie2_report.txt`)
+
+---
+
+## **Step III — Duplicate Removal & Filtering**
+
+Reads mapped to:
+
+* chrM
+* unplaced scaffolds
+* haplotypes
+* random chromosomes
+
+are removed.
+
+Duplicates are removed using **Picard MarkDuplicates**.
+
+Outputs:
+
+* *_cleaned.bam
+* *_deduplicated.bam
+* BAM indexes
+* duplication metrics
+
+---
+
+## **Step IV — Normalized Track Generation**
+
+Each cleaned BAM file is converted to bigWig with CPM normalization:
+
+```bash
+bamCoverage --bam sample.bam --normalizeUsing CPM --extendReads 200 -o sample.bw
+```
+
+Track lines for the UCSC Genome Browser are auto-generated:
+
+```
+track type=bigWig name=Sample bigDataUrl=http://...
+```
+
+---
+
+## **Step V — Peak Calling (MACS3)**
+
+MACS3 is used with:
+
+* 200 bp extension
+* 100 bp shift
+* q = 0.01
+* summit calling
+
+Outputs:
+
+* NarrowPeak files
+* bedGraph & bigWig signal
+* Summit files
+
+---
+
+## **Step VI — Differential Accessibility (DESeq2)**
+
+A fully automated pipeline performs all pairwise comparisons:
+
+* suc_trx vs. suc_control
+* DSS_trx vs. DSS_control
+* DSS_control vs. suc_control
+* DSS_trx vs. suc_trx
+
+For each comparison, the pipeline exports:
+
+* All peaks (`_all_deseq2.txt`)
+* FDR-filtered peaks (`_fdr_deseq2.txt`)
+* P-value-filtered peaks (`_pval_deseq2.txt`)
+* Volcano plot images (PNG)
+
+---
+
+## **Step VII — Peak Annotation (±5 kb TSS + Gene Body)**
+
+Peaks are annotated based on:
+
+* TSS within ±5 kb of peak center
+* Overlaps with gene bodies
+
+Using bedtools:
+
+* A 5-kb sliding window is generated per peak
+* Overlaps with TSS and genes are computed
+* Merged annotation tables are produced
+
+
+# ** Contact**
+
+For questions or issues regarding the workflow:
+
+📧 **[galaras@fleming.gr](mailto:galaras@fleming.gr)**
