@@ -1,0 +1,14 @@
+samplename	filename	condition	paired	stranded
+HERq1_Ctrl_Sucrose_1	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq1_Ctrl_Sucrose_1.bam	cnt-Suc	single	forward
+HERq2_Ctrl_Sucrose_2	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq2_Ctrl_Sucrose_2.bam	cnt-Suc	single	forward
+HERq3_Ctrl_Sucrose_3	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq3_Ctrl_Sucrose_3.bam	cnt-Suc	single	forward
+HERq7_trxRNAi_Sucrose_1	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq7_trxRNAi_Sucrose_1.bam	trxRNAi-Suc	single	forward
+HERq8_trxRNAi_Sucrose_2	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq8_trxRNAi_Sucrose_2.bam	trxRNAi-Suc	single	forward
+HERq9_trxRNAi_Sucrose_3	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq9_trxRNAi_Sucrose_3.bam	trxRNAi-Suc	single	forward
+HERq10_trxRNAi_DSS_1	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq10_trxRNAi_DSS_1.bam	trxRNAi-DSS	single	forward
+HERq11_trxRNAi_DSS_2	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq11_trxRNAi_DSS_2.bam	trxRNAi-DSS	single	forward
+HERq12_trxRNAi_DSS_3	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq12_trxRNAi_DSS_3.bam	trxRNAi-DSS	single	forward
+HERq4_Ctrl_DSS_1	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq4_Ctrl_DSS_1.bam	cnt-DSS 	single	forward
+HERq5_Ctrl_DSS_2	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq5_Ctrl_DSS_2.bam	cnt-DSS 	single	forward
+HERq6_Ctrl_DSS_3	/media/samba/hatzis_lab/iliopoulos2023/bam/HERq6_Ctrl_DSS_3.bam	cnt-DSS 	single	forward
+
