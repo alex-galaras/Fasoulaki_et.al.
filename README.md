@@ -176,7 +176,7 @@ The workflow performs:
   A tab-delimited file describing samples, groups, and count files.
 
 * **annotation.sqlite**
-  SQLite annotation DB for dm6 (local reference database).
+  SQLite annotation DB for dm6 (local reference database). It can be downloaded from [here](https://drive.google.com/drive/folders/15lOY9PBggCcaoohO_0rQTvExXenqah55) as suggested in the metaseqR2 package
 
 ---
 
